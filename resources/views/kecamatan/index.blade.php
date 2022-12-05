@@ -33,13 +33,24 @@
                         <h2>Data Kecamatan</h2>
                     </div>
                     <div class="card-body">
-                        <a href="{{ url('/kecamatan/create') }}" class="btn btn-success btn-sm" title="Add New Kecamatan">
-                            Add New
-                        </a>
-                        <a href="{{ url('/kecamatan/cetak_pdf') }}" class="btn btn-secondary btn-sm" target="_blank"
+                      
+
+                            <a href="{{ url('/kecamatan/create') }}" class="btn btn-success btn-sm" title="Add New Kecamatan">
+                                Add New
+                            </a>
+                            <a href="{{ url('/kecamatan/cetak_pdf') }}" class="btn btn-secondary btn-sm" target="_blank"
                             title="Cetak PDF">
                             Cetak PDF
                         </a>
+                        <div class="row g-2 align-items-center mt-2">
+                            <div class="col-auto">
+                                <form action="/kecamatan" method="GET" class="d-flex">
+                                    <input type="search" class="form-control mr-2" id="search" name="search">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </form>
+                            </div>
+                        </div>
+                    
                         <br />
                         <br />
                         <div class="table-responsive">

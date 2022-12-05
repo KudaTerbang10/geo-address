@@ -10,7 +10,7 @@
                 {{ session('constraint') }}
             </div>
         @endif
-        
+
         <div class="row" style="margin:20px;">
             <div class="col-12">
                 <div class="card">
@@ -21,9 +21,19 @@
                         <a href="{{ url('/kabupaten/create') }}" class="btn btn-success btn-sm" title="Add New Kabupaten">
                             Add New
                         </a>
-                        <a href="{{ url('/kabupaten/cetak_pdf') }}" class="btn btn-secondary btn-sm" target="_blank" title="Cetak PDF">
+                        <a href="{{ url('/kabupaten/cetak_pdf') }}" class="btn btn-secondary btn-sm" target="_blank"
+                            title="Cetak PDF">
                             Cetak PDF
                         </a>
+                        <div class="row g-2 align-items-center mt-2">
+                            <div class="col-auto">
+                                <form action="/kabupaten" method="GET" class="d-flex">
+                                    <input type="search" class="form-control mr-2" id="search" name="search">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </form>
+                            </div>
+                        </div>
+
                         <br />
                         <br />
                         <div class="table-responsive">

@@ -14,9 +14,14 @@ class KabupatenController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $kabupaten = Kabupaten::paginate(5); // variable = models::query
+        if ($request->has('search')) {
+            $kabupaten = Kabupaten::where('nama_kabupaten','ILIKE','%'.$request->search.'%')->paginate(5);
+        } else {
+            $kabupaten = Kabupaten::paginate(5); // variable = models::query
+        }
+
         return view('kabupaten.index')->with('kabupaten', $kabupaten);
     }
 

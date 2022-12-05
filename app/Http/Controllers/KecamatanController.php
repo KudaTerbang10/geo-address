@@ -15,12 +15,25 @@ class KecamatanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //Query Builder
-        $kecamatan = DB::table('m_kecamatan')
+
+        if ($request->has('search')) {
+            // $kecamatan = Kecamatan::where('nama_kecamatan','ILIKE','%'.$request->search.'%')->paginate(5);
+            $kecamatan = DB::table('m_kecamatan')
             ->leftJoin('m_kabupaten', 'm_kecamatan.id_kabupaten', '=', 'm_kabupaten.id_kabupaten')
-            ->paginate(5);
+                ->select('m_kabupaten.*', 'm_kecamatan.*')
+                ->distinct()
+                ->where('nama_kecamatan', 'ilike', '%' . $request->search . '%')
+                ->paginate(10);
+        } else {
+            $kecamatan = DB::table('m_kecamatan')
+                ->leftJoin('m_kabupaten', 'm_kecamatan.id_kabupaten', '=', 'm_kabupaten.id_kabupaten')
+                ->paginate(5);
+        }
+
+        //Query Builder
+
 
         return view('kecamatan.index')->with('kecamatan', $kecamatan);
     }
@@ -28,8 +41,8 @@ class KecamatanController extends Controller
     public function cetak_pdf()
     {
         $kecamatan = DB::table('m_kecamatan')
-        ->leftJoin('m_kabupaten', 'm_kecamatan.id_kabupaten', '=', 'm_kabupaten.id_kabupaten')
-        ->get();
+            ->leftJoin('m_kabupaten', 'm_kecamatan.id_kabupaten', '=', 'm_kabupaten.id_kabupaten')
+            ->get();
 
         $pdf = Pdf::loadview('kecamatan/kecamatan_pdf', ['kecamatan' => $kecamatan]);
         return $pdf->stream('laporan-Data-Kecamatan-pdf');
@@ -53,10 +66,11 @@ class KecamatanController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_kecamatan' => 'required|unique:m_kecamatan'
-            // 'id_kecamatan' => 'required|unique:m_kecamatan'
-        ]
+        $request->validate(
+            [
+                'nama_kecamatan' => 'required|unique:m_kecamatan'
+                // 'id_kecamatan' => 'required|unique:m_kecamatan'
+            ]
         );
 
         $kecamatan = new Kecamatan();
@@ -74,13 +88,12 @@ class KecamatanController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {   
-        $kabupaten = Kabupaten::all()->pluck('nama_kabupaten','id_kabupaten'); //query untuk dropdown list
+    {
+        $kabupaten = Kabupaten::all()->pluck('nama_kabupaten', 'id_kabupaten'); //query untuk dropdown list
         $kecamatan = Kecamatan::find($id); //query untuk ambil data kecamatan
         $id_kabupaten = $kecamatan->id_kabupaten; //Kode untuk ambil data id kabupaten dalam row kecamatan
         $nama_kabupaten = Kabupaten::find($id_kabupaten); //query untuk nama kabupaten berdasarkan id_kabupaten dalam table kecamatan
-        return view('kecamatan/edit', compact('kecamatan','kabupaten','nama_kabupaten'));
-        
+        return view('kecamatan/edit', compact('kecamatan', 'kabupaten', 'nama_kabupaten'));
     }
 
     /**
@@ -104,9 +117,10 @@ class KecamatanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nama_kecamatan' => 'required|unique:m_kecamatan'
-        ]
+        $request->validate(
+            [
+                'nama_kecamatan' => 'required|unique:m_kecamatan'
+            ]
         );
 
         $kecamatan = Kecamatan::find($id);
