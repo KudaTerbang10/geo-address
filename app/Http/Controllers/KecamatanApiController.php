@@ -39,7 +39,7 @@ class KecamatanApiController extends Controller
     public function store(Request $request)
     {
         $kecamatan = Kecamatan::create([
-            'id_kecamatan' => $request->id_kecamatan,
+            'id_kecamatan' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'nama_kecamatan' => $request->nama_kecamatan,
             'id_kabupaten' => $request->id_kabupaten
         ]);

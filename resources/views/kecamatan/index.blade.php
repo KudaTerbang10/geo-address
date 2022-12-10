@@ -1,30 +1,14 @@
-{{-- @extends('layouts/app')
-@section('content')
-    <div class="container">
-        <table border="1">
-            <tr>
-                <th bgcolor="purple">No</th>
-                <th bgcolor="purple">Kecamatan</th>
-                <th bgcolor="purple">Kabupaten</th>
-                <th bgcolor="purple">Opsi</th>
-            </tr>
-            @foreach ($kecamatan as $row)
-                <tr>
-                    <td>{{$loop->iteration}}</td>
-                    <td>{{$row->nama_kecamatan}}</td>
-                    <td>{{$row->nama_kabupaten}}</td>
-                    <td>
-                        <button>Edit</button>
-                        <button>Delete</button>
-                    </td>
-                </tr>
-            @endforeach
-        </table>
-    </div>
-@endsection --}}
-
 @extends('kecamatan.layout')
 @section('content')
+    @if (session()->has('flash_message'))
+        <div class="alert alert-success mb-2" role="alert">
+            {{ session('flash_message') }}
+        </div>
+    @elseif (session()->has('constraint'))
+        <div class="alert alert-danger mb-2" role="alert">
+            {{ session('constraint') }}
+        </div>
+    @endif
     <div class="container">
         <div class="row" style="margin:20px;">
             <div class="col-12">
@@ -33,12 +17,12 @@
                         <h2>Data Kecamatan</h2>
                     </div>
                     <div class="card-body">
-                      
 
-                            <a href="{{ url('/kecamatan/create') }}" class="btn btn-success btn-sm" title="Add New Kecamatan">
-                                Add New
-                            </a>
-                            <a href="{{ url('/kecamatan/cetak_pdf') }}" class="btn btn-secondary btn-sm" target="_blank"
+
+                        <a href="{{ url('/kecamatan/create') }}" class="btn btn-success btn-sm" title="Add New Kecamatan">
+                            Add New
+                        </a>
+                        <a href="{{ url('/kecamatan/cetak_pdf') }}" class="btn btn-secondary btn-sm" target="_blank"
                             title="Cetak PDF">
                             Cetak PDF
                         </a>
@@ -50,7 +34,7 @@
                                 </form>
                             </div>
                         </div>
-                    
+
                         <br />
                         <br />
                         <div class="table-responsive">

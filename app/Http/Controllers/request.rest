@@ -1,0 +1,12 @@
+GET http://localhost:8000/api/kabupatenapi
+###
+GET http://localhost:8000/kabupaten/dbbf08dd-069e-4fff-80dd-76871c025b96
+
+###
+POST http://localhost:8000/api/kabupatenapi
+Content-Type: application/json
+
+{
+    "id_kabupaten": "",
+    "nama_kabupaten" : "Soekabooming",
+}

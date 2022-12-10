@@ -32,7 +32,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-
     Route::get('/kabupaten/cetak_pdf',[KabupatenController::class, 'cetak_pdf'])->name(('kabupaten.cetakpdf'));
     Route::get('/kabupaten',[KabupatenController::class, 'index'])->name(('kabupaten.index'));
     Route::resource("/kabupaten", KabupatenController::class);

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class KabupatenApiController extends Controller
 {
-    /**
+    /** 
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -39,7 +39,7 @@ class KabupatenApiController extends Controller
     public function store(Request $request)
     {
         $kabupaten = Kabupaten::create([
-            'id_kabupaten' => $request->id_kabupaten,
+            'id_kabupaten' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'nama_kabupaten' => $request->nama_kabupaten,
         ]);
         return response()->json([

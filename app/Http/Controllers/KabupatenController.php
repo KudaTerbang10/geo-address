@@ -74,7 +74,6 @@ class KabupatenController extends Controller
      */
     public function show($id)
     {
-
         $kabupaten = Kabupaten::find($id);
         return view('kabupaten/edit', compact('kabupaten'));
     }
@@ -87,8 +86,8 @@ class KabupatenController extends Controller
      */
     public function edit(Kabupaten $id_kabupaten)
     {
-        $kabupaten = Kabupaten::find($id_kabupaten);
-        return view('kabupaten.edit')->with('kabupaten', $kabupaten);
+        // $kabupaten = Kabupaten::find($id_kabupaten);
+        // return view('kabupaten.edit')->with('kabupaten', $kabupaten);
     }
 
     /**
@@ -123,7 +122,8 @@ class KabupatenController extends Controller
         try {
             Kabupaten::destroy($id);
             return redirect('kabupaten')->with('flash_message', 'Kabupaten Deleted!');
-        } catch (Exception) {
+        }
+        catch (Exception) {
 
             return redirect('kabupaten')->with('constraint', 'Data Kabupaten sedang digunakan pada data kecamatan');
         }

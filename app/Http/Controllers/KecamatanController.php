@@ -6,6 +6,7 @@ use App\Models\Kabupaten;
 use Illuminate\Support\Facades\DB;
 use App\Models\Kecamatan;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Illuminate\Http\Request;
 
 class KecamatanController extends Controller
@@ -19,9 +20,8 @@ class KecamatanController extends Controller
     {
 
         if ($request->has('search')) {
-            // $kecamatan = Kecamatan::where('nama_kecamatan','ILIKE','%'.$request->search.'%')->paginate(5);
             $kecamatan = DB::table('m_kecamatan')
-            ->leftJoin('m_kabupaten', 'm_kecamatan.id_kabupaten', '=', 'm_kabupaten.id_kabupaten')
+                ->leftJoin('m_kabupaten', 'm_kecamatan.id_kabupaten', '=', 'm_kabupaten.id_kabupaten')
                 ->select('m_kabupaten.*', 'm_kecamatan.*')
                 ->distinct()
                 ->where('nama_kecamatan', 'ilike', '%' . $request->search . '%')
@@ -66,19 +66,27 @@ class KecamatanController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate(
-            [
-                'nama_kecamatan' => 'required|unique:m_kecamatan'
-                // 'id_kecamatan' => 'required|unique:m_kecamatan'
-            ]
-        );
+        $nama_kecamatan = $request->nama_kecamatan;
+        $id_kabupaten = $request->id_kabupaten;
 
-        $kecamatan = new Kecamatan();
-        $kecamatan->id_kecamatan = \Ramsey\Uuid\Uuid::uuid4()->toString();
-        $kecamatan->nama_kecamatan = $request->nama_kecamatan;
-        $kecamatan->id_kabupaten = $request->id_kabupaten;
-        $kecamatan->save();
-        return redirect('kecamatan')->with('flash_message', 'Kecamatan Added!');
+        $whereData = [
+            ['nama_kecamatan', $nama_kecamatan],
+            ['id_kabupaten', $id_kabupaten],
+        ];
+
+        $count = DB::table('m_kecamatan')->where($whereData)
+            ->count();
+
+        if ($count > 0) {
+            return redirect('kecamatan/create')->with('flash_message', 'Data Kecamatan Exists');
+        } else {
+            $kecamatan = new Kecamatan();
+            $kecamatan->id_kecamatan = \Ramsey\Uuid\Uuid::uuid4()->toString();
+            $kecamatan->nama_kecamatan = $request->nama_kecamatan;
+            $kecamatan->id_kabupaten = $request->id_kabupaten;
+            $kecamatan->save();
+            return redirect('kecamatan')->with('flash_message', 'Kecamatan Added!');
+        }
     }
 
     /**
@@ -117,16 +125,35 @@ class KecamatanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate(
-            [
-                'nama_kecamatan' => 'required|unique:m_kecamatan'
-            ]
-        );
+        $nama_kecamatan = $request->nama_kecamatan;
+        $id_kabupaten = $request->id_kabupaten;
 
-        $kecamatan = Kecamatan::find($id);
-        $input = $request->all();
-        $kecamatan->update($input);
-        return redirect('kecamatan')->with('flash_message', 'Kecamatan Updated!');
+        $whereData = [
+            ['nama_kecamatan', $nama_kecamatan],
+            ['id_kabupaten', $id_kabupaten],
+        ];
+
+        $count = DB::table('m_kecamatan')->where($whereData)
+            ->count();
+
+        if ($count > 0) {
+            return redirect('kecamatan/'.$id)->with('flash_message', 'Kecamatan sudah terdaftar pada kabupaten ini');
+        } else {
+            $kecamatan = Kecamatan::find($id);
+            $input = $request->all();
+            $kecamatan->update($input);
+            return redirect('kecamatan')->with('flash_message', 'Kecamatan Updated!');
+        }
+        // $request->validate(
+        //     [
+        //         'nama_kecamatan' => 'required|unique:m_kecamatan'
+        //     ]
+        // );
+
+        // $kecamatan = Kecamatan::find($id);
+        // $input = $request->all();
+        // $kecamatan->update($input);
+        // return redirect('kecamatan')->with('flash_message', 'Kecamatan Updated!');
     }
 
     /**
@@ -137,7 +164,15 @@ class KecamatanController extends Controller
      */
     public function destroy($id)
     {
-        Kecamatan::destroy($id);
-        return redirect('kecamatan')->with('flash_message', 'Kecamatan Deleted!');
+        try {
+            Kecamatan::destroy($id);
+            return redirect('kecamatan')->with('flash_message', 'Kecamatan Deleted!');
+        }
+        catch (Exception) {
+
+            return redirect('kecamatan')->with('constraint', 'Data Kecamatan Gagal Dihapus');
+        }
+        // Kecamatan::destroy($id);
+        // return redirect('kecamatan')->with('flash_message', 'Kecamatan Deleted!');
     }
 }

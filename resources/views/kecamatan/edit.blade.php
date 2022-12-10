@@ -1,6 +1,10 @@
 @extends('kecamatan.layout')
 @section('content')
-
+@if (session()->has('flash_message'))
+<div class="alert alert-danger mb-2" role="alert">
+    {{ session('flash_message') }}
+</div>
+@endif
     <div class="card" style="margin:20px;">
         <div class="card-header">Edit Kecamatan</div>
         <div class="card-body">
